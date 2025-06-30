@@ -19,37 +19,40 @@ public class LoginGUI extends JFrame {
 
     private JLabel usernameLabel;
     private JLabel passwordLabel;
+    private JLabel languageLabel;
     private JButton loginBtn;
     private JButton registerBtn;
 
     private Locale currentLocale;
+    private final String BUNDLE_BASENAME = "lang"; // Definisikan base name di sini
 
     public LoginGUI() {
-        currentLocale = new Locale("en"); 
-        LangUtil.setLocale("en");
+        currentLocale = new Locale("en");
+        LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); // Panggil setBundle
 
-        setTitle("Login App");
-        setSize(300, 200);
+        setSize(350, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Panel atas: pemilih bahasa
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        languageLabel = new JLabel();
         languageSelector = new JComboBox<>(new String[]{"English", "Bahasa Indonesia"});
-        languageSelector.setSelectedItem("English"); 
+        languageSelector.setSelectedItem("English");
         languageSelector.addActionListener(e -> {
             String selected = (String) languageSelector.getSelectedItem();
             String currentLang = selected.equals("English") ? "en" : "id";
             currentLocale = new Locale(currentLang);
-            LangUtil.setLocale(currentLang);
+            LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); // Panggil setBundle
             reloadText();
         });
 
+        topPanel.add(languageLabel);
         topPanel.add(languageSelector);
         add(topPanel, BorderLayout.NORTH);
 
-        // Panel tengah: form
-        JPanel formPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         usernameLabel = new JLabel();
         formPanel.add(usernameLabel);
         usernameField = new JTextField();
@@ -71,22 +74,25 @@ public class LoginGUI extends JFrame {
 
         add(formPanel, BorderLayout.CENTER);
 
-        reloadText(); 
+        reloadText();
 
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void reloadText() {
+        languageLabel.setText(LangUtil.get("language_label"));
         usernameLabel.setText(LangUtil.get("username"));
         passwordLabel.setText(LangUtil.get("password"));
         loginBtn.setText(LangUtil.get("login"));
         registerBtn.setText(LangUtil.get("register"));
         setTitle(LangUtil.get("login"));
+
         this.revalidate();
         this.repaint();
     }
-
+    
+    // ... (Metode showLoading, hideLoading, handleRegister, handleLogin, dan main tetap sama)
     private void showLoading(String message) {
         loadingDialog = new JDialog(this, LangUtil.get("loading_title"), true);
         loadingDialog.setLayout(new BorderLayout());
