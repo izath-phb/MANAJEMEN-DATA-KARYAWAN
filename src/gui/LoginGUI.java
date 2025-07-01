@@ -23,12 +23,13 @@ public class LoginGUI extends JFrame {
     private JButton loginBtn;
     private JButton registerBtn;
 
-    private Locale currentLocale;
-    private final String BUNDLE_BASENAME = "lang"; // Definisikan base name di sini
+    // Ubah BUNDLE_BASENAME menjadi "resources"
+    private final String BUNDLE_BASENAME = "resources.resources"; 
+    private Locale currentLocale; 
 
     public LoginGUI() {
         currentLocale = new Locale("en");
-        LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); // Panggil setBundle
+        LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); 
 
         setSize(350, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,7 +43,7 @@ public class LoginGUI extends JFrame {
             String selected = (String) languageSelector.getSelectedItem();
             String currentLang = selected.equals("English") ? "en" : "id";
             currentLocale = new Locale(currentLang);
-            LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); // Panggil setBundle
+            LangUtil.setBundle(BUNDLE_BASENAME, currentLocale); 
             reloadText();
         });
 
@@ -86,13 +87,12 @@ public class LoginGUI extends JFrame {
         passwordLabel.setText(LangUtil.get("password"));
         loginBtn.setText(LangUtil.get("login"));
         registerBtn.setText(LangUtil.get("register"));
-        setTitle(LangUtil.get("login"));
+        setTitle(LangUtil.get("login")); 
 
         this.revalidate();
         this.repaint();
     }
-    
-    // ... (Metode showLoading, hideLoading, handleRegister, handleLogin, dan main tetap sama)
+
     private void showLoading(String message) {
         loadingDialog = new JDialog(this, LangUtil.get("loading_title"), true);
         loadingDialog.setLayout(new BorderLayout());
@@ -157,6 +157,7 @@ public class LoginGUI extends JFrame {
                     if (success) {
                         JOptionPane.showMessageDialog(LoginGUI.this, LangUtil.get("login_success"));
                         dispose();
+                        // Teruskan kode bahasa yang dipilih ke EmployeeManagerGUI
                         new EmployeeManagerGUI(currentLocale.getLanguage());
                     } else {
                         JOptionPane.showMessageDialog(LoginGUI.this, LangUtil.get("login_failed"));

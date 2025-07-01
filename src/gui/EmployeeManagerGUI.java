@@ -2,7 +2,7 @@ package gui;
 
 import model.Employee;
 import service.MongoService;
-import util.LangUtil; // Import LangUtil
+import util.LangUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,8 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Locale;
-// ResourceBundle tidak lagi diperlukan di sini
-// import java.util.ResourceBundle;
 
 public class EmployeeManagerGUI extends JFrame {
 
@@ -24,25 +22,26 @@ public class EmployeeManagerGUI extends JFrame {
     private JLabel nameLabel, ageLabel, deptLabel, languageLabel;
     private JButton saveBtn, viewBtn, deleteBtn;
 
-    // Definisikan base name untuk bundle employee
-    private final String BUNDLE_BASENAME = "messages";
+    // PASTIKAN BUNDLE_BASENAME SUDAH BENAR
+    private final String BUNDLE_BASENAME = "resources.resources"; 
 
     public EmployeeManagerGUI(String languageCode) {
-        // Atur bundle yang benar saat inisialisasi
         LangUtil.setBundle(BUNDLE_BASENAME, new Locale(languageCode));
-        initUI();
-        
+        initUI(); // initUI akan membuat komponen
+
+        // *** PERBAIKAN KRITIS DI SINI ***
         // Atur pilihan combo box sesuai bahasa yang masuk
         if ("id".equals(languageCode)) {
-            languageSelector.setSelectedItem("Indonesia");
+            languageSelector.setSelectedItem("English"); 
         } else {
-            languageSelector.setSelectedItem("English");
+            languageSelector.setSelectedItem("Bahasa Indonesia");
         }
+        
+        reloadText(); 
     }
 
     private void initUI() {
-        // Semua panggilan ke bundle.getString() diganti dengan LangUtil.get()
-        setTitle(LangUtil.get("title"));
+        setTitle(LangUtil.get("title")); 
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -65,9 +64,10 @@ public class EmployeeManagerGUI extends JFrame {
         deptField = new JTextField();
         inputPanel.add(deptField);
 
-        languageLabel = new JLabel(LangUtil.get("language"));
+        languageLabel = new JLabel(LangUtil.get("language")); 
         inputPanel.add(languageLabel);
-        languageSelector = new JComboBox<>(new String[]{"English", "Indonesia"});
+        // PASTIKAN INI ADALAH "Bahasa Indonesia"
+        languageSelector = new JComboBox<>(new String[]{"English", "Bahasa Indonesia"}); 
         languageSelector.addActionListener(e -> switchLanguage());
         inputPanel.add(languageSelector);
 
@@ -97,18 +97,12 @@ public class EmployeeManagerGUI extends JFrame {
 
     private void switchLanguage() {
         String selected = (String) languageSelector.getSelectedItem();
-        String langCode = selected.equals("Indonesia") ? "id" : "en";
+        String langCode = selected.equals("English") ? "en" : "id";
         
-        // Atur bundle yang benar menggunakan LangUtil
         LangUtil.setBundle(BUNDLE_BASENAME, new Locale(langCode));
-
-        // Panggil metode untuk memuat ulang teks UI
-        reloadText();
+        reloadText(); // Memuat ulang semua teks
     }
     
-    /**
-     * Metode baru untuk memuat ulang semua teks di UI.
-     */
     private void reloadText() {
         setTitle(LangUtil.get("title"));
         nameLabel.setText(LangUtil.get("name"));
@@ -120,11 +114,10 @@ public class EmployeeManagerGUI extends JFrame {
         viewBtn.setText(LangUtil.get("viewAll"));
         deleteBtn.setText(LangUtil.get("deleteAll"));
 
-        // Refresh data tabel untuk memperbarui header kolom
-        viewEmployees(null);
+        viewEmployees(null); 
         
-        revalidate();
-        repaint();
+        revalidate(); 
+        repaint();    
     }
 
     private void saveEmployee(ActionEvent e) {
@@ -133,8 +126,7 @@ public class EmployeeManagerGUI extends JFrame {
         String dept = deptField.getText();
 
         if (name.isEmpty() || ageText.isEmpty() || dept.isEmpty()) {
-            // Sebaiknya tambahkan pesan error dari file properti juga
-            JOptionPane.showMessageDialog(this, "Fields cannot be empty.");
+            JOptionPane.showMessageDialog(this, LangUtil.get("empty_fields")); 
             return;
         }
         
@@ -143,12 +135,11 @@ public class EmployeeManagerGUI extends JFrame {
             Employee emp = new Employee(name, age, dept);
             MongoService.saveEmployee(emp);
             JOptionPane.showMessageDialog(this, LangUtil.get("dataSaved"));
-            // Kosongkan field setelah menyimpan
             nameField.setText("");
             ageField.setText("");
             deptField.setText("");
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Age must be a valid number.");
+            JOptionPane.showMessageDialog(this, LangUtil.get("age_not_valid_number_error")); 
         }
     }
 
@@ -170,11 +161,10 @@ public class EmployeeManagerGUI extends JFrame {
     }
 
     private void deleteAllEmployees(ActionEvent e) {
-        // Tambahkan konfirmasi sebelum menghapus
-        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete all employees?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+        int response = JOptionPane.showConfirmDialog(this, LangUtil.get("confirm_delete_all"), LangUtil.get("confirm_deletion_title"), JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             MongoService.deleteAllEmployees();
-            viewEmployees(null); // Refresh tabel
+            viewEmployees(null); 
         }
     }
 
