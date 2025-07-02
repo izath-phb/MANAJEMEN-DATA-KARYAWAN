@@ -7,7 +7,7 @@ public class MultiLanguage {
 
     public static String getMessage(String key, String languageCode) {
         Locale locale = new Locale(languageCode);
-        ResourceBundle bundle = ResourceBundle.getBundle("resources.messages", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("resources.resources", locale);
         return bundle.getString(key);
     }
 }

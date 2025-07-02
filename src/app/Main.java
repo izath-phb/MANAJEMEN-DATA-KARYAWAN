@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
         // Hash password
         String pass = "mypassword";
         String hashed = HashUtil.hashBCrypt(pass);
@@ -43,5 +44,16 @@ public class Main {
         List<User> userList = MongoService.getAllUsers();
         System.out.println("=== Daftar User ===");
         GenericUtil.printList(userList);
+
+        // ===== Contoh Multi-threading =====
+        System.out.println("\n=== Contoh Multi-threading ===");
+
+        DataProcessorThread thread1 = new DataProcessorThread("Proses Simulasi 1");
+        DataProcessorThread thread2 = new DataProcessorThread("Proses Simulasi 2");
+
+        thread1.start(); // Memulai thread pertama
+        thread2.start(); // Memulai thread kedua
+
+        System.out.println("Main thread selesai.");
     }
 }
